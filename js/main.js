@@ -10,6 +10,7 @@ var settings = defaultSettings;
 
 // Находим DOM-элемент поля боя
 var battleArea = document.getElementById("battleArea");
+var enemiesContainer = document.getElementById("enemies");
 
 // Объект-помощник создания HTML элементов
 var DomHelper = {
@@ -49,9 +50,6 @@ function Unit(type, xPos = 10, yPos = 10) {
     this.y = yPos;
 
     this.htmlReference = DomHelper.elements.createUnit(this.typeName, this.isPlayer);
-
-    DomHelper.elements.draw(this.htmlReference, this.x, this.y);
-    this.updateHP();
 }
 
 
@@ -235,11 +233,15 @@ Unit.initializeEnemies = function(enemyAmount, type = Unit.types.waterdrop) {
         enemies.push(new Unit(type,
             // позиционируем объекты в зависимости от их 
             // колличества и размеров игрового поля
-            i * 40 + battleArea.offsetWidth - enemyAmount / 4 * 185 - 120 / (enemyAmount ** 1.5),
-            i % 4 * -40 + 160));
+            // X :
+            (i * -30) - enemyAmount / 4 * 70,
+            // Y: 
+            i % 3 * -90 + 175));
 
         // Добавляем обработчик события по клику
         Unit.addListeners(enemies[i])
+        DomHelper.elements.draw(enemies[i].htmlReference, enemies[i].x, enemies[i].y, enemiesContainer);
+    enemies[i].updateHP();
     }
 
     // Возвращаем наполненный массив
@@ -249,9 +251,11 @@ Unit.initializeEnemies = function(enemyAmount, type = Unit.types.waterdrop) {
 
 // Статичный матод инициализации(создания) игрока
 
-Unit.initializePlayer = function(posX = 30, posY = 40) {
-    var player = new Unit(Unit.types.player, 30, 40);
+Unit.initializePlayer = function(posX = 10, posY = 40) {
+    var player = new Unit(Unit.types.player, posX, posY);
     Unit.addListeners(player);
+    DomHelper.elements.draw(player.htmlReference, player.x, player.y);
+    player.updateHP();
     return player;
 }
 

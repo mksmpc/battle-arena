@@ -1,9 +1,14 @@
+body {
+    margin: 0 auto;
+    max-width: 800px;
+}
+
 #battleArea {
     position: relative;
 
     display: block;
     overflow: hidden;
-    min-width: auto;
+    width: auto;
     height: 400px;
 
     background-image: url('../images/battleBackground.jpg');
@@ -104,6 +109,12 @@
 
 .unit[state="dead"] .hpBar {
     visibility: hidden;
+}
+
+#enemies {
+    position: absolute;
+    right: 0;
+    bottom: 0;
 }
 
 .enemy {

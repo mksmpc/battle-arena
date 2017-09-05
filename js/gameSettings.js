@@ -2,8 +2,8 @@
 var defaultSettings = {
     canSuicide: true,
     playerName: "Bob",
-    enemyAmount: 2,
+    enemyAmount: 5,
     playerAmount: 1,
     defaultAction: "attack",
-    gameSpeed: 5
+    gameSpeed: 1
 }
