@@ -1,1 +1,3 @@
-# battle-arena
+# Battle Arena
+
+Turn-based RPG game
