@@ -40,10 +40,10 @@ function Unit(type, xPos = 10, yPos = 10) {
     this.typeName = type.typeName;
     this.hp = 100;
     this.attcackPower = type.attcackPower;
-    this.defensePoints = type.defensePoints;
+    this.defensePower = type.defensePower;
     this.additionalDefense = 0;
     this.criticalAttackChance = 0.2;
-    this.criticalAttackPower = 20;
+    this.criticalAttackBoost = 20;
     this.state = "idle";
 
     this.x = xPos;
@@ -69,19 +69,20 @@ Unit.prototype.attack = function(enemy) {
     }
 
     if (this === enemy && !settings.canSuicide) {
-        console.log("no suicide please");
+        this.showMessage("No suicide please", "say", 2);
         return false;
     }
     var additionalPower = 0;
 
     // Check critical attack chanse
     if (Math.random() < this.criticalAttackChance) {
-        additionalPower += this.attcackPower * this.criticalAttackPower / 100;
+        additionalPower += this.attcackPower * this.criticalAttackBoost / 100;
         console.log('additionalPower', 'additionalPower:', additionalPower)
-        console.log("Critical Attack!");
+        this.showMessage("Critical!", "critical", settings.gameSpeed);
     }
+
     // Calculate fight values (attack and defense)
-    var defenseValue = enemy.defensePoints + enemy.additionalDefense;
+    var defenseValue = enemy.defensePower + enemy.additionalDefense;
     if (defenseValue > 100) { defenseValue = 100; }
 
     var attackValue = this.attcackPower + additionalPower;
@@ -93,7 +94,7 @@ Unit.prototype.attack = function(enemy) {
     enemy.startAnimation("blink");
     enemy.hp -= +hitValue.toFixed(2);
     enemy.hp = enemy.hp.toFixed(1);
-    console.log(this.typeName + " attack " + enemy.typeName + " with " + hitValue + " hits");
+    enemy.showMessage("-" + hitValue.toFixed(2) + " HP", "hit", settings.gameSpeed);
 
     console.log('enemy.hp:', enemy.hp);
 
@@ -114,7 +115,7 @@ Unit.prototype.attack = function(enemy) {
 // Метод защиты юнита
 
 Unit.prototype.shield = function() {
-    this.additionalDefense = +(1.25 * this.defensePoints).toFixed(1);
+    this.additionalDefense = +(1.25 * this.defensePower).toFixed(1);
     console.log('this.additional...nse', this.additionalDefense);
 }
 
@@ -129,6 +130,14 @@ Unit.prototype.updateHP = function() {
     // Обновляем информацию
     hpBar.innerHTML = "HP: " + HP;
     hpBar.style.backgroundPosition = "-" + HP + "%";
+}
+
+
+Unit.prototype.showMessage = function(message, status, speed = 1) {
+    var element = this.htmlReference;
+    element.dataset.message = message;
+    element.dataset.messageStatus = status;
+    this.startAnimation("showMessage", speed);
 }
 
 
@@ -196,13 +205,12 @@ Unit.prototype.addListeners = function() {
 
 
 // Метод запуска анимации юнита
-Unit.prototype.startAnimation = function(animationName, duration = 700) {
+Unit.prototype.startAnimation = function(animationName, speed = 1) {
     var element = this.htmlReference;
     element.classList.add(animationName);
     setTimeout(function() {
         element.classList.remove(animationName);
-    }, duration)
-    
+    }, speed * 950)
 }
 
 
@@ -247,11 +255,11 @@ Unit.activateNextUnit = function() {
 
 // Статичный метод создания типов юнитов
 
-Unit.createType = function(typeName, attcackPower = 10, defensePoints = 10, isPlayer = false) {
+Unit.createType = function(typeName, attcackPower = 10, defensePower = 10, isPlayer = false) {
     var type = {};
     type.typeName = typeName;
     type.attcackPower = attcackPower;
-    type.defensePoints = defensePoints;
+    type.defensePower = defensePower;
     type.isPlayer = isPlayer;
     return type;
 }
@@ -299,7 +307,7 @@ Unit.initializePlayer = function(posX = 10, posY = 40) {
 /////////////////////////////////
 
 
-function Enemy(type, attackPower, defensePoints) {
+function Enemy(type, attackPower, defensePower) {
     // body... 
 }
 
@@ -377,8 +385,8 @@ DomHelper.elements.unit = DomHelper.createDiv("unit"),
 function initializeLevel(settings) {
     // Объект-список типов юнитов
     Unit.types = {
-        player: Unit.createType("player", 17, 10, true),
-        waterdrop: Unit.createType("waterdrop", 4, 5)
+        player: Unit.createType("player", 30, 18, true),
+        waterdrop: Unit.createType("waterdrop", 1.4, 0)
     }
     Unit.count = 0;
     Unit.enemies = Unit.initializeEnemies(settings.enemyAmount);

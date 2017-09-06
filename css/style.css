@@ -1,11 +1,9 @@
-body
-{
+body {
     max-width: 800px;
     margin: 0 auto;
 }
 
-#battleArea
-{
+#battleArea {
     position: relative;
 
     display: block;
@@ -18,8 +16,7 @@ body
     background-position: right bottom;
 }
 
-.unit
-{
+.unit {
     position: absolute;
     z-index: 1;
 
@@ -35,8 +32,55 @@ body
     border-radius: 50%;
 }
 
-.unit::after
-{
+.unit::before {
+    font-family: monospace;
+    font-size: 16px;
+    font-weight: bold;
+
+    position: absolute;
+    z-index: 22;
+    top: 0;
+    left: 50%;
+
+    display: block;
+
+    padding: 2px 7px;
+
+    content: attr(data-message);
+    transition: all 400ms ease-out;
+    transform: translateX(-50%);
+    white-space: nowrap;
+
+    opacity: 0;
+    border-radius: 20px;
+    background-color: rgba(238, 238, 236, .85);
+    box-shadow: 0 0 5px 5px rgba(238, 238, 236, .85);
+}
+
+.unit.showMessage::before {
+    -webkit-animation: popup 1000ms linear;
+    -o-animation: popup 1000ms linear;
+    animation: popup 1000ms linear;
+}
+
+
+.unit[data-message-status='hit']::before {
+    color: red;
+        background-color: #222;
+    box-shadow: 0 0 5px 5px #222;
+}
+
+.unit[data-message-status='critical']::before {
+    color: #cc1;
+    background-color: #248;
+    box-shadow: 0 0 5px 5px #248;
+}
+.unit[data-message-status='say']::before {
+     white-space: normal;
+     animation-duration: 2s;
+}
+
+.unit::after {
     position: absolute;
     z-index: -3;
     right: 38%;
@@ -55,8 +99,7 @@ body
             box-shadow: 0 0 10px 6px rgba(10, 10, 10, .7);
 }
 
-.unit.active
-{
+.unit.active {
     -webkit-animation: shine .4s ease-in infinite alternate;
          -o-animation: shine .4s ease-in infinite alternate;
             animation: shine .4s ease-in infinite alternate;
@@ -65,27 +108,23 @@ body
     box-shadow: 0 8px 10px 10px rgba(234, 220, 70, .9);
 }
 
-.unit.selected
-{
+.unit.selected {
     box-shadow: 0 0 2px 3px #3f2;
 }
 
-.unit:hover
-{
+.unit:hover {
     box-shadow: 0 0 2px 3px #f32;
 }
 
 
-.unit.blink .img
-{
+.unit.blink .img {
     -webkit-animation: blink 130ms linear 0s 3;
          -o-animation: blink 130ms linear 0s 3;
             animation: blink 130ms linear 0s 3;
     animation-iteration-count: 5;
 }
 
-.img
-{
+.img {
     position: relative;
 
     display: inline-block;
@@ -101,8 +140,7 @@ body
             background-size: contain;
 }
 
-.img::after
-{
+.img::after {
     position: absolute;
     top: 15%;
 
@@ -120,38 +158,33 @@ body
             background-size: contain;
 }
 
-.player .img::after
-{
+.player .img::after {
     right: 0;
 
     background-image: url('../images/simpleSword.png');
 }
 
-.enemy .img::after
-{
+.enemy .img::after {
     width: 20px;
     height: 50px;
 
     background-image: url('../images/rubyShortSword.png');
 }
 
-.attack .img::after
-{
+.attack .img::after {
     display: block;
 
     -webkit-animation: attackSword 300ms ease-in 0s;
          -o-animation: attackSword 300ms ease-in 0s;
             animation: attackSword 300ms ease-in 0s;
 }
-.enemy.attack .img::after
-{
+.enemy.attack .img::after {
     -webkit-animation: inverseAttackSword 300ms ease-in 0s;
          -o-animation: inverseAttackSword 300ms ease-in 0s;
             animation: inverseAttackSword 300ms ease-in 0s;
 }
 
-.unit[state='dead'] .img
-{
+.unit[state='dead'] .img {
     transform: rotate(90deg) translateX(30%);
     -webkit-animation-name: none;
          -o-animation-name: none;
@@ -159,8 +192,7 @@ body
 }
 
 
-.hpBar
-{
+.hpBar {
     position: absolute;
     top: -20px;
     left: -5px;
@@ -180,33 +212,28 @@ body
             background-size: 200%;
 }
 
-.unit[state='dead'] .hpBar
-{
+.unit[state='dead'] .hpBar {
     visibility: hidden;
 }
 
-#enemies
-{
+#enemies {
     position: absolute;
-    right: 0;
+    right: 5px;
     bottom: 0;
 }
 
-.enemy
-{
+.enemy {
     font-size: .8em;
 
     width: 70px;
     height: 70px;
 }
 
-.player
-{
+.player {
     z-index: 10;
 }
 
-.waterdrop
-{
+.waterdrop {
     width: 90%;
     height: 90%;
 
@@ -223,88 +250,63 @@ body
     background-image: url(../images/EnemyWaterDrop.png);
 }
 
-.Hero
-{
+.Hero {
     background-image: url(../images/player.png);
 }
 
-@keyframes fly
-{
-    0%
-    {
+@keyframes fly {
+    0% {
         bottom: 0;
     }
-    100%
-    {
+    100% {
         bottom: 4px;
     }
 }
 
-@keyframes shine
-{
-    100%
-    {
+@keyframes shine {
+    100% {
         background-color: rgba(44, 170, 180, .1);
         box-shadow: 0 16px 10px 10px rgba(44, 170, 180, .1);
     }
 }
 
-@keyframes blink
-{
-    50%
-    {
+@keyframes blink {
+    50% {
         opacity: 0;
     }
 }
 
-@-webkit-keyframes attackSword
-{
-    from
-    {
-        transform: rotate(0deg);
-    }
-    to
-    {
+@keyframes attackSword {
+    50% {
         transform: rotate(90deg);
     }
 }
 
-@-o-keyframes attackSword
-{
-    from
-    {
-        transform: rotate(0deg);
-    }
-    to
-    {
-        transform: rotate(90deg);
-    }
-}
-
-@-moz-keyframes attackSword
-{
-    from
-    {
-        transform: rotate(0deg);
-    }
-    to
-    {
-        transform: rotate(90deg);
-    }
-}
-
-@keyframes attackSword
-{
-    50%
-    {
-        transform: rotate(90deg);
-    }
-}
-
-@keyframes inverseAttackSword
-{
-    50%
-    {
+@keyframes inverseAttackSword {
+    50% {
         transform: rotate(-90deg);
+    }
+}
+
+@keyframes popup {
+    0% {
+        top: -20px; 
+
+        opacity: 0;
+    }
+    20% {
+        top: -40px; 
+
+        opacity: 1;
+    }
+    70% {
+        top: -60px;
+
+        opacity: 1;
+    }
+    100% {
+        top: -70px;
+
+        opacity: 0;
     }
 }
