@@ -1,13 +1,16 @@
-body {
-    margin: 0 auto;
+body
+{
     max-width: 800px;
+    margin: 0 auto;
 }
 
-#battleArea {
+#battleArea
+{
     position: relative;
 
     display: block;
     overflow: hidden;
+
     width: auto;
     height: 400px;
 
@@ -15,162 +18,293 @@ body {
     background-position: right bottom;
 }
 
-.unit {
-
-    width: 80px;
+.unit
+{
     position: absolute;
-
-    height: 80px;
-    border-radius: 50%;
-    text-align: center;
-    margin: 8px;
     z-index: 1;
 
+    width: 80px;
+    height: 80px;
+    margin: 8px;
+
     -webkit-animation-name: none;
-    -o-animation-name: none;
-    animation-name: none;
+         -o-animation-name: none;
+            animation-name: none;
+    text-align: center;
+
+    border-radius: 50%;
 }
 
-.unit::after {
-    display: inline-block;
+.unit::after
+{
     position: absolute;
-    bottom: 0px;
+    z-index: -3;
     right: 38%;
-    content: "";
+    bottom: 0;
+
+    display: inline-block;
+
     width: 30%;
     height: 3px;
-    background-color: rgba(10, 10, 10, 0.7);
+
+    content: '';
+
     border-radius: 50%;
-    z-index: -3;
-    -webkit-box-shadow: 0 0 10px 6px rgba(10, 10, 10, 0.7);
-    box-shadow: 0 0 10px 6px rgba(10, 10, 10, 0.7);
-}
-.unit.active {
-    box-shadow: 0 8px 10px 10px rgba(234, 220, 70, .9);
-    background-color: rgba(234, 220, 70, .9);
-    -webkit-animation: shine .4s ease-in infinite alternate;
-    -o-animation: shine .4s ease-in infinite alternate;
-    animation: shine .4s ease-in infinite alternate;
+    background-color: rgba(10, 10, 10, .7);
+    -webkit-box-shadow: 0 0 10px 6px rgba(10, 10, 10, .7);
+            box-shadow: 0 0 10px 6px rgba(10, 10, 10, .7);
 }
 
-.unit.selected {
+.unit.active
+{
+    -webkit-animation: shine .4s ease-in infinite alternate;
+         -o-animation: shine .4s ease-in infinite alternate;
+            animation: shine .4s ease-in infinite alternate;
+
+    background-color: rgba(234, 220, 70, .9);
+    box-shadow: 0 8px 10px 10px rgba(234, 220, 70, .9);
+}
+
+.unit.selected
+{
     box-shadow: 0 0 2px 3px #3f2;
 }
 
-.unit:hover {
+.unit:hover
+{
     box-shadow: 0 0 2px 3px #f32;
 }
 
 
-.unit:active .img {
+.unit.blink .img
+{
     -webkit-animation: blink 130ms linear 0s 3;
-    -o-animation: blink 130ms linear 0s 3;
-    animation: blink 130ms linear 0s 3;
+         -o-animation: blink 130ms linear 0s 3;
+            animation: blink 130ms linear 0s 3;
     animation-iteration-count: 5;
 }
 
-.img {
+.img
+{
+    position: relative;
+
     display: inline-block;
-    background-repeat: no-repeat;
-    background-position: bottom;
-    -webkit-background-size: contain;
-    background-size: contain;
 
     width: 100%;
     height: 100%;
-    position: relative;
 
     transition: transform .15s ease-out;
+
+    background-repeat: no-repeat;
+    background-position: bottom;
+    -webkit-background-size: contain;
+            background-size: contain;
 }
 
-.unit[state="dead"] .img {
+.img::after
+{
+    position: absolute;
+    top: 15%;
+
+    display: none;
+
+    width: 30px;
+    height: 60px;
+
+    content: '';
+    transform-origin: 0 100%;
+
+    background-repeat: no-repeat;
+    background-position: center;
+    -webkit-background-size: contain;
+            background-size: contain;
+}
+
+.player .img::after
+{
+    right: 0;
+
+    background-image: url('../images/simpleSword.png');
+}
+
+.enemy .img::after
+{
+    width: 20px;
+    height: 50px;
+
+    background-image: url('../images/rubyShortSword.png');
+}
+
+.attack .img::after
+{
+    display: block;
+
+    -webkit-animation: attackSword 300ms ease-in 0s;
+         -o-animation: attackSword 300ms ease-in 0s;
+            animation: attackSword 300ms ease-in 0s;
+}
+.enemy.attack .img::after
+{
+    -webkit-animation: inverseAttackSword 300ms ease-in 0s;
+         -o-animation: inverseAttackSword 300ms ease-in 0s;
+            animation: inverseAttackSword 300ms ease-in 0s;
+}
+
+.unit[state='dead'] .img
+{
     transform: rotate(90deg) translateX(30%);
     -webkit-animation-name: none;
-    -o-animation-name: none;
-    animation-name: none;
+         -o-animation-name: none;
+            animation-name: none;
 }
 
 
-.hpBar {
+.hpBar
+{
     position: absolute;
-    display: inline-block;
     top: -20px;
     left: -5px;
-    -webkit-background-size: 200%;
-    background-size: 200%;
-    background-image: linear-gradient(270deg, #5d5 50%, #c55 0%);
-    padding: 0 5px;
+
+    display: inline-block;
+
     width: 100%;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
+    padding: 0 5px;
+
     cursor: default;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+
+    background-image: linear-gradient(270deg, #5d5 50%, #c55 0%);
+    -webkit-background-size: 200%;
+            background-size: 200%;
 }
 
-.unit[state="dead"] .hpBar {
+.unit[state='dead'] .hpBar
+{
     visibility: hidden;
 }
 
-#enemies {
+#enemies
+{
     position: absolute;
     right: 0;
     bottom: 0;
 }
 
-.enemy {
+.enemy
+{
+    font-size: .8em;
+
     width: 70px;
     height: 70px;
-    font-size: .8em;
 }
 
-.player {
+.player
+{
     z-index: 10;
 }
 
-.waterdrop {
+.waterdrop
+{
     width: 90%;
     height: 90%;
-    background-image: url(../images/EnemyWaterDrop.png);
+
     animation-name: fly;
     -webkit-animation-duration: 500ms;
-    -o-animation-duration: 500ms;
-    animation-duration: 500ms;
+         -o-animation-duration: 500ms;
+            animation-duration: 500ms;
     -webkit-animation-timing-function: ease-in;
-    -o-animation-timing-function: ease-in;
-    animation-timing-function: ease-in;
+         -o-animation-timing-function: ease-in;
+            animation-timing-function: ease-in;
     animation-iteration-count: infinite;
     animation-direction: alternate;
+
+    background-image: url(../images/EnemyWaterDrop.png);
 }
 
-.Hero {
+.Hero
+{
     background-image: url(../images/player.png);
 }
 
-@keyframes fly {
-
-    0% {
+@keyframes fly
+{
+    0%
+    {
         bottom: 0;
     }
-    100% {
+    100%
+    {
         bottom: 4px;
     }
 }
 
-@keyframes shine {
-    100% {
-        box-shadow: 0 16px 10px 10px rgba(44, 170, 180, .1);
+@keyframes shine
+{
+    100%
+    {
         background-color: rgba(44, 170, 180, .1);
+        box-shadow: 0 16px 10px 10px rgba(44, 170, 180, .1);
     }
 }
 
-@keyframes blink {
-    0% {
-        opacity: 1;
-    }
-    50% {
+@keyframes blink
+{
+    50%
+    {
         opacity: 0;
     }
-    100% {
-        opacity: 1;
+}
+
+@-webkit-keyframes attackSword
+{
+    from
+    {
+        transform: rotate(0deg);
+    }
+    to
+    {
+        transform: rotate(90deg);
+    }
+}
+
+@-o-keyframes attackSword
+{
+    from
+    {
+        transform: rotate(0deg);
+    }
+    to
+    {
+        transform: rotate(90deg);
+    }
+}
+
+@-moz-keyframes attackSword
+{
+    from
+    {
+        transform: rotate(0deg);
+    }
+    to
+    {
+        transform: rotate(90deg);
+    }
+}
+
+@keyframes attackSword
+{
+    50%
+    {
+        transform: rotate(90deg);
+    }
+}
+
+@keyframes inverseAttackSword
+{
+    50%
+    {
+        transform: rotate(-90deg);
     }
 }

@@ -50,6 +50,7 @@ function Unit(type, xPos = 10, yPos = 10) {
     this.y = yPos;
 
     this.htmlReference = DomHelper.elements.createUnit(this.typeName, this.isPlayer);
+    this.addListeners();
 }
 
 
@@ -88,12 +89,14 @@ Unit.prototype.attack = function(enemy) {
     var hitValue = attackValue * (1 - defenseValue / 100);
 
     // Attack enemy
+    this.startAnimation("attack");
+    enemy.startAnimation("blink");
     enemy.hp -= +hitValue.toFixed(2);
     enemy.hp = enemy.hp.toFixed(1);
     console.log(this.typeName + " attack " + enemy.typeName + " with " + hitValue + " hits");
 
-
     console.log('enemy.hp:', enemy.hp);
+
     // Kill enemy if HP < 0
     if (enemy.hp <= 0) {
         enemy.setState("dead");
@@ -166,9 +169,40 @@ Unit.prototype.runAction = function(target, action = "attack") {
     }
     if (state === "died") { Unit.aliveEnemies--; }
     if (state) {
-                    Unit.activateNextUnit();
-                }
+        Unit.activateNextUnit();
+    }
     return state;
+}
+
+
+// Метод добавления обработчиков событий
+
+Unit.prototype.addListeners = function() {
+    // Обработчик клика
+    this.htmlReference.addEventListener("click", function() {
+        playIteration(this);
+    }.bind(this));
+
+    // // Обработчик окончания анимации
+    // var pfx = ["webkit", "moz", "MS", "o", ""];
+    // var type = "AnimationEnd";
+    // for (var p = 0; p < pfx.length; p++) {
+    //     if (!pfx[p]) type = type.toLowerCase();
+    //     this.htmlReference.addEventListener(pfx[p] + type, function(e) {
+    //         this.classList.remove(e.animationName);
+    //     }, false);
+    // }
+}
+
+
+// Метод запуска анимации юнита
+Unit.prototype.startAnimation = function(animationName, duration = 700) {
+    var element = this.htmlReference;
+    element.classList.add(animationName);
+    setTimeout(function() {
+        element.classList.remove(animationName);
+    }, duration)
+    
 }
 
 
@@ -239,9 +273,8 @@ Unit.initializeEnemies = function(enemyAmount, type = Unit.types.waterdrop) {
             i % 3 * -90 + 175));
 
         // Добавляем обработчик события по клику
-        Unit.addListeners(enemies[i])
-        DomHelper.elements.draw(enemies[i].htmlReference, enemies[i].x, enemies[i].y, enemiesContainer);
-    enemies[i].updateHP();
+        DomHelper.elements.render(enemies[i].htmlReference, enemies[i].x, enemies[i].y, enemiesContainer);
+        enemies[i].updateHP();
     }
 
     // Возвращаем наполненный массив
@@ -253,21 +286,12 @@ Unit.initializeEnemies = function(enemyAmount, type = Unit.types.waterdrop) {
 
 Unit.initializePlayer = function(posX = 10, posY = 40) {
     var player = new Unit(Unit.types.player, posX, posY);
-    Unit.addListeners(player);
-    DomHelper.elements.draw(player.htmlReference, player.x, player.y);
+    DomHelper.elements.render(player.htmlReference, player.x, player.y);
     player.updateHP();
     return player;
 }
 
 
-// Статичный метож добавления обработчиков событий
-
-Unit.addListeners = function(unit) {
-    unit.htmlReference.addEventListener("click", function() {
-        playIteration(this);
-    }.bind(unit));
-}
-
 
 
 /////////////////////////////////
@@ -275,7 +299,7 @@ Unit.addListeners = function(unit) {
 /////////////////////////////////
 
 
-function Enemy (type, attackPower, defensePoints) {
+function Enemy(type, attackPower, defensePoints) {
     // body... 
 }
 
@@ -328,7 +352,7 @@ DomHelper.elements.createUnit = function(type, isPlayer = false) {
 // Метод отрисовки DOM-элемента на странице в xPos, yPos
 // относительно родительского элемента (игровое поле по умолчанию)
 
-DomHelper.elements.draw = function(element, posX = 10, posY = 20, parent = battleArea) {
+DomHelper.elements.render = function(element, posX = 10, posY = 20, parent = battleArea) {
     var newHtmlObject = parent.appendChild(element);
     newHtmlObject.style.cssText = "left: " + posX + "px; " +
         "bottom: " + posY + "px; ";
