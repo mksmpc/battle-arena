@@ -37,7 +37,7 @@ function Unit(type, xPos = 10, yPos = 10) {
     Unit.activeId; // ID активного элемента
 
     this.isPlayer = type.isPlayer;
-    this.typeName = type.typeName;
+    this.unitClass = type.unitClass;
     this.hp = 100;
     this.attcackPower = type.attcackPower;
     this.defensePower = type.defensePower;
@@ -49,7 +49,7 @@ function Unit(type, xPos = 10, yPos = 10) {
     this.x = xPos;
     this.y = yPos;
 
-    this.htmlReference = DomHelper.elements.createUnit(this.typeName, this.isPlayer);
+    this.htmlReference = DomHelper.elements.createUnit(this.unitClass, this.isPlayer);
     this.addListeners();
 }
 
@@ -64,7 +64,7 @@ function Unit(type, xPos = 10, yPos = 10) {
 Unit.prototype.attack = function(enemy) {
     // Check for death 
     if (enemy.state === "dead") {
-        console.log(enemy.typeName + " is dead");
+        enemy.showMessage(enemy.unitClass + " is dead", "say", 2);
         return false;
     }
 
@@ -101,7 +101,7 @@ Unit.prototype.attack = function(enemy) {
     // Kill enemy if HP < 0
     if (enemy.hp <= 0) {
         enemy.setState("dead");
-        console.log(enemy.typeName + " killed by " + this.typeName);
+        console.log(enemy.unitClass + " killed by " + this.unitClass);
         enemy.updateHP();
         return "died";
     }
@@ -133,6 +133,7 @@ Unit.prototype.updateHP = function() {
 }
 
 
+// Метод отображения всплывающего сообщения над юнитом
 Unit.prototype.showMessage = function(message, status, speed = 1) {
     var element = this.htmlReference;
     element.dataset.message = message;
@@ -207,10 +208,12 @@ Unit.prototype.addListeners = function() {
 // Метод запуска анимации юнита
 Unit.prototype.startAnimation = function(animationName, speed = 1) {
     var element = this.htmlReference;
+    speed *=1000;
     element.classList.add(animationName);
+    element.style.animationDuration = speed + "ms";
     setTimeout(function() {
         element.classList.remove(animationName);
-    }, speed * 950)
+    }, speed)
 }
 
 
@@ -255,9 +258,9 @@ Unit.activateNextUnit = function() {
 
 // Статичный метод создания типов юнитов
 
-Unit.createType = function(typeName, attcackPower = 10, defensePower = 10, isPlayer = false) {
+Unit.createType = function(unitClass, attcackPower = 10, defensePower = 10, isPlayer = false) {
     var type = {};
-    type.typeName = typeName;
+    type.unitClass = unitClass;
     type.attcackPower = attcackPower;
     type.defensePower = defensePower;
     type.isPlayer = isPlayer;
@@ -305,11 +308,6 @@ Unit.initializePlayer = function(posX = 10, posY = 40) {
 /////////////////////////////////
 /////////////////////////////////
 /////////////////////////////////
-
-
-function Enemy(type, attackPower, defensePower) {
-    // body... 
-}
 
 
 
