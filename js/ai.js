@@ -16,7 +16,7 @@ function AiStart() {
                 Unit.active.runAction(Unit.player);
             }
 
-        }, 1050/settings.gameSpeed * (i + 1));
+        }, 1100/settings.gameSpeed * (i + 1));
 
     }
 }
